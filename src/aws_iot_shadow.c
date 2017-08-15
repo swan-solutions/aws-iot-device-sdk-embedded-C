@@ -35,8 +35,7 @@ extern "C" {
 const ShadowInitParameters_t ShadowInitParametersDefault = {(char *) AWS_IOT_MQTT_HOST, AWS_IOT_MQTT_PORT, NULL, NULL,
 															NULL, false, NULL};
 
-const ShadowConnectParameters_t ShadowConnectParametersDefault = {(char *) AWS_IOT_MY_THING_NAME,
-																  (char *) AWS_IOT_MQTT_CLIENT_ID, 0};
+const ShadowConnectParameters_t ShadowConnectParametersDefault = {"", "", 0};
 
 void aws_iot_shadow_reset_last_received_version(void) {
 	shadowJsonVersionNum = 0;
@@ -55,7 +54,6 @@ void aws_iot_shadow_disable_discard_old_delta_msgs(void) {
 }
 
 IoT_Error_t aws_iot_shadow_init(AWS_IoT_Client *pClient, ShadowInitParameters_t *pParams) {
-	IoT_Client_Init_Params mqttInitParams;
 	IoT_Error_t rc;
 
 	FUNC_ENTRY;
@@ -64,6 +62,7 @@ IoT_Error_t aws_iot_shadow_init(AWS_IoT_Client *pClient, ShadowInitParameters_t 
 		FUNC_EXIT_RC(NULL_VALUE_ERROR);
 	}
 
+	IoT_Client_Init_Params mqttInitParams = iotClientInitParamsDefault;
 	mqttInitParams.enableAutoReconnect = pParams->enableAutoReconnect;
 	mqttInitParams.pHostURL = pParams->pHost;
 	mqttInitParams.port = pParams->port;
@@ -74,6 +73,7 @@ IoT_Error_t aws_iot_shadow_init(AWS_IoT_Client *pClient, ShadowInitParameters_t 
 	mqttInitParams.tlsHandshakeTimeout_ms = 5000;
 	mqttInitParams.isSSLHostnameVerify = true;
 	mqttInitParams.disconnectHandler = pParams->disconnectHandler;
+	mqttInitParams.disconnectHandlerData = pParams->disconnectHandlerData;
 
 	rc = aws_iot_mqtt_init(pClient, &mqttInitParams);
 	if(SUCCESS != rc) {
@@ -91,7 +91,6 @@ IoT_Error_t aws_iot_shadow_connect(AWS_IoT_Client *pClient, ShadowConnectParamet
 	IoT_Error_t rc = SUCCESS;
 	char deleteAcceptedTopic[MAX_SHADOW_TOPIC_LENGTH_BYTES];
 	uint16_t deleteAcceptedTopicLen;
-	IoT_Client_Connect_Params ConnectParams = iotClientConnectParamsDefault;
 
 	FUNC_ENTRY;
 
@@ -102,14 +101,15 @@ IoT_Error_t aws_iot_shadow_connect(AWS_IoT_Client *pClient, ShadowConnectParamet
 	snprintf(myThingName, MAX_SIZE_OF_THING_NAME, "%s", pParams->pMyThingName);
 	snprintf(mqttClientID, MAX_SIZE_OF_UNIQUE_CLIENT_ID_BYTES, "%s", pParams->pMqttClientId);
 
-	ConnectParams.keepAliveIntervalInSec = 10;
-	ConnectParams.MQTTVersion = MQTT_3_1_1;
+	IoT_Client_Connect_Params ConnectParams = iotClientConnectParamsDefault;
+	ConnectParams.keepAliveIntervalInSec = pParams->keepAliveIntervalInSec;
 	ConnectParams.isCleanSession = true;
-	ConnectParams.isWillMsgPresent = false;
+	ConnectParams.MQTTVersion = MQTT_3_1_1;
 	ConnectParams.pClientID = pParams->pMqttClientId;
 	ConnectParams.clientIDLen = pParams->mqttClientIdLen;
-	ConnectParams.pPassword = NULL;
-	ConnectParams.pUsername = NULL;
+	ConnectParams.isWillMsgPresent = false;
+	//ConnectParams.pPassword = NULL;
+	//ConnectParams.pUsername = NULL;
 
 	rc = aws_iot_mqtt_connect(pClient, &ConnectParams);
 

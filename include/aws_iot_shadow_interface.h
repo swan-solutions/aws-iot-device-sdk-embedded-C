@@ -57,6 +57,7 @@ typedef struct {
 	char *pClientKey; ///< Location of Device private key
 	bool enableAutoReconnect;        ///< Set to true to enable auto reconnect
 	iot_disconnect_handler disconnectHandler;    ///< Callback to be invoked upon connection loss.
+	void *disconnectHandlerData;			///< Data to pass as argument when disconnect handler is called
 } ShadowInitParameters_t;
 
 /*!
@@ -69,6 +70,7 @@ typedef struct {
  *
  */
 typedef struct {
+	uint16_t keepAliveIntervalInSec;	///< MQTT keep alive interval in seconds.  Defines inactivity time allowed before determining the connection has been lost.
 	char *pMyThingName; ///< Every device has a Thing Shadow and this is the placeholder for name
 	char *pMqttClientId; ///< Currently the Shadow uses MQTT to connect and it is important to ensure we have unique client id
 	uint16_t mqttClientIdLen; ///< Currently the Shadow uses MQTT to connect and it is important to ensure we have unique client id
