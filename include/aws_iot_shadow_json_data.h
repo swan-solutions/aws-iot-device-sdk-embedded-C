@@ -26,6 +26,7 @@ extern "C" {
  */
 
 #include <stddef.h>
+#include "aws_iot_error.h"
 
 /**
  * @brief This is a static JSON object that could be used in code
