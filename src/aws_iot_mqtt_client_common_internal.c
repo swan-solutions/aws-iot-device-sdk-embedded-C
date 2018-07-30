@@ -425,7 +425,7 @@ static char _aws_iot_mqtt_internal_is_topic_matched(char *pTopicFilter, char *pT
 	char *curf, *curn, *curn_end;
 
 	if(NULL == pTopicFilter || NULL == pTopicName) {
-		return NULL_VALUE_ERROR;
+		return 0;
 	}
 
 	curf = pTopicFilter;
