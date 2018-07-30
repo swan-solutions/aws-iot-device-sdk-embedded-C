@@ -378,10 +378,8 @@ bool isJsonKeyMatchingAndUpdateValue(const char *pJsonDocument, void *pJsonHandl
 									 jsonStruct_t *pDataStruct, uint32_t *pDataLength, int32_t *pDataPosition) {
 	int32_t i;
 	uint32_t dataLength;
-	jsmntok_t *pJsonTokenStruct;
 	jsmntok_t dataToken;
 
-	pJsonTokenStruct = (jsmntok_t *) pJsonHandler;
 	for(i = 1; i < tokenCount; i++) {
 		if(jsoneq(pJsonDocument, &(jsonTokenStruct[i]), pDataStruct->pKey) == 0) {
 			dataToken = jsonTokenStruct[i + 1];
