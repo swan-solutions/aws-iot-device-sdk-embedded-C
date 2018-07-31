@@ -61,6 +61,8 @@ IoT_Error_t iot_tls_connect(Network *pNetwork, TLSConnectParams *TLSParams)
     SlSockAddrIn_t address;
     TLSConnectParams *tlsParams;
     long lRetVal = -1;
+    long lNonBlocking = 1;
+    long timeout = SOCKET_TIMEOUT_VAL;
 
     if (pNetwork == NULL) {
         return (NULL_VALUE_ERROR);
@@ -74,7 +76,6 @@ IoT_Error_t iot_tls_connect(Network *pNetwork, TLSConnectParams *TLSParams)
     if (skt < 0) return NETWORK_ERR_NET_SOCKET_FAILED;
 
     // Configure socket to be non-blocking
-    long lNonBlocking = 1;
     lRetVal = sl_SetSockOpt(skt,
     						SL_SOL_SOCKET,
     						SL_SO_NONBLOCKING,
@@ -145,7 +146,6 @@ IoT_Error_t iot_tls_connect(Network *pNetwork, TLSConnectParams *TLSParams)
     address.sin_addr.s_addr = sl_Htonl(ip);
 
     // Connect to server
-    long timeout = SOCKET_TIMEOUT_VAL;
     while(1) {
 		lRetVal = sl_Connect(skt, (SlSockAddr_t *)&address, sizeof(address));
 		if(lRetVal != SL_EALREADY) break;
