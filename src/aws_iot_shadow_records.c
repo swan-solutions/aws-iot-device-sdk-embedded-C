@@ -475,7 +475,7 @@ static void shadow_delta_callback(AWS_IoT_Client *pClient, char *topicName,
 	uint32_t dataLength;
 	uint32_t tempVersionNumber = 0;
 
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 
 	IOT_UNUSED(pClient);
 	IOT_UNUSED(topicName);

@@ -51,21 +51,21 @@ const IoT_MQTT_Will_Options iotMqttWillOptionsDefault = IoT_MQTT_Will_Options_In
 const IoT_Client_Connect_Params iotClientConnectParamsDefault = IoT_Client_Connect_Params_initializer;
 
 ClientState aws_iot_mqtt_get_client_state(AWS_IoT_Client *pClient) {
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 	if(NULL == pClient) {
 		return CLIENT_STATE_INVALID;
 	}
 
-	FUNC_EXIT_RC(pClient->clientStatus.clientState);
+	IOT_FUNC_EXIT_RC(pClient->clientStatus.clientState);
 }
 
 #ifdef _ENABLE_THREAD_SUPPORT_
 IoT_Error_t aws_iot_mqtt_client_lock_mutex(AWS_IoT_Client *pClient, IoT_Mutex_t *pMutex) {
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 	IoT_Error_t threadRc = FAILURE;
 
 	if(NULL == pClient || NULL == pMutex){
-		FUNC_EXIT_RC(NULL_VALUE_ERROR);
+		IOT_FUNC_EXIT_RC(NULL_VALUE_ERROR);
 	}
 
 	if(false == pClient->clientData.isBlockOnThreadLockEnabled) {
@@ -76,10 +76,10 @@ IoT_Error_t aws_iot_mqtt_client_lock_mutex(AWS_IoT_Client *pClient, IoT_Mutex_t 
 	}
 
 	if(SUCCESS != threadRc) {
-		FUNC_EXIT_RC(threadRc);
+		IOT_FUNC_EXIT_RC(threadRc);
 	}
 
-	FUNC_EXIT_RC(SUCCESS);
+	IOT_FUNC_EXIT_RC(SUCCESS);
 }
 
 IoT_Error_t aws_iot_mqtt_client_unlock_mutex(AWS_IoT_Client *pClient, IoT_Mutex_t *pMutex) {
@@ -98,9 +98,9 @@ IoT_Error_t aws_iot_mqtt_set_client_state(AWS_IoT_Client *pClient, ClientState e
 	IoT_Error_t threadRc = FAILURE;
 #endif
 
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 	if(NULL == pClient) {
-		FUNC_EXIT_RC(NULL_VALUE_ERROR);
+		IOT_FUNC_EXIT_RC(NULL_VALUE_ERROR);
 	}
 
 #ifdef _ENABLE_THREAD_SUPPORT_
@@ -123,13 +123,13 @@ IoT_Error_t aws_iot_mqtt_set_client_state(AWS_IoT_Client *pClient, ClientState e
 	}
 #endif
 
-	FUNC_EXIT_RC(rc);
+	IOT_FUNC_EXIT_RC(rc);
 }
 
 IoT_Error_t aws_iot_mqtt_set_connect_params(AWS_IoT_Client *pClient, IoT_Client_Connect_Params *pNewConnectParams) {
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 	if(NULL == pClient || NULL == pNewConnectParams) {
-		FUNC_EXIT_RC(NULL_VALUE_ERROR);
+		IOT_FUNC_EXIT_RC(NULL_VALUE_ERROR);
 	}
 
 	pClient->clientData.options.isWillMsgPresent = pNewConnectParams->isWillMsgPresent;
@@ -149,7 +149,7 @@ IoT_Error_t aws_iot_mqtt_set_connect_params(AWS_IoT_Client *pClient, IoT_Client_
 	pClient->clientData.options.keepAliveIntervalInSec = pNewConnectParams->keepAliveIntervalInSec;
 	pClient->clientData.options.isCleanSession = pNewConnectParams->isCleanSession;
 
-	FUNC_EXIT_RC(SUCCESS);
+	IOT_FUNC_EXIT_RC(SUCCESS);
 }
 
 IoT_Error_t aws_iot_mqtt_init(AWS_IoT_Client *pClient, IoT_Client_Init_Params *pInitParams) {
@@ -157,12 +157,12 @@ IoT_Error_t aws_iot_mqtt_init(AWS_IoT_Client *pClient, IoT_Client_Init_Params *p
 	IoT_Error_t rc;
 	IoT_Client_Connect_Params default_options = IoT_Client_Connect_Params_initializer;
 
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 
 	if(NULL == pClient || NULL == pInitParams || NULL == pInitParams->pHostURL || 0 == pInitParams->port ||
 	   NULL == pInitParams->pRootCALocation || NULL == pInitParams->pDevicePrivateKeyLocation ||
 	   NULL == pInitParams->pDeviceCertLocation) {
-		FUNC_EXIT_RC(NULL_VALUE_ERROR);
+		IOT_FUNC_EXIT_RC(NULL_VALUE_ERROR);
 	}
 
 	for(i = 0; i < AWS_IOT_MQTT_NUM_SUBSCRIBE_HANDLERS; ++i) {
@@ -184,22 +184,22 @@ IoT_Error_t aws_iot_mqtt_init(AWS_IoT_Client *pClient, IoT_Client_Init_Params *p
 	/* Initialize default connection options */
 	rc = aws_iot_mqtt_set_connect_params(pClient, &default_options);
 	if(SUCCESS != rc) {
-		FUNC_EXIT_RC(rc);
+		IOT_FUNC_EXIT_RC(rc);
 	}
 
 #ifdef _ENABLE_THREAD_SUPPORT_
 	pClient->clientData.isBlockOnThreadLockEnabled = pInitParams->isBlockOnThreadLockEnabled;
 	rc = aws_iot_thread_mutex_init(&(pClient->clientData.state_change_mutex));
 	if(SUCCESS != rc) {
-		FUNC_EXIT_RC(rc);
+		IOT_FUNC_EXIT_RC(rc);
 	}
 	rc = aws_iot_thread_mutex_init(&(pClient->clientData.tls_read_mutex));
 	if(SUCCESS != rc) {
-		FUNC_EXIT_RC(rc);
+		IOT_FUNC_EXIT_RC(rc);
 	}
 	rc = aws_iot_thread_mutex_init(&(pClient->clientData.tls_write_mutex));
 	if(SUCCESS != rc) {
-		FUNC_EXIT_RC(rc);
+		IOT_FUNC_EXIT_RC(rc);
 	}
 #endif
 
@@ -212,7 +212,7 @@ IoT_Error_t aws_iot_mqtt_init(AWS_IoT_Client *pClient, IoT_Client_Init_Params *p
 
 	if(SUCCESS != rc) {
 		pClient->clientStatus.clientState = CLIENT_STATE_INVALID;
-		FUNC_EXIT_RC(rc);
+		IOT_FUNC_EXIT_RC(rc);
 	}
 
 	init_timer(&(pClient->pingTimer));
@@ -220,7 +220,7 @@ IoT_Error_t aws_iot_mqtt_init(AWS_IoT_Client *pClient, IoT_Client_Init_Params *p
 
 	pClient->clientStatus.clientState = CLIENT_STATE_INITIALIZED;
 
-	FUNC_EXIT_RC(SUCCESS);
+	IOT_FUNC_EXIT_RC(SUCCESS);
 }
 
 uint16_t aws_iot_mqtt_get_next_packet_id(AWS_IoT_Client *pClient) {
@@ -231,11 +231,11 @@ uint16_t aws_iot_mqtt_get_next_packet_id(AWS_IoT_Client *pClient) {
 bool aws_iot_mqtt_is_client_connected(AWS_IoT_Client *pClient) {
 	bool isConnected;
 
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 
 	if(NULL == pClient) {
 		IOT_WARN(" Client is null! ");
-		FUNC_EXIT_RC(false);
+		IOT_FUNC_EXIT_RC(false);
 	}
 
 	switch(pClient->clientStatus.clientState) {
@@ -262,38 +262,38 @@ bool aws_iot_mqtt_is_client_connected(AWS_IoT_Client *pClient) {
 			break;
 	}
 
-	FUNC_EXIT_RC(isConnected);
+	IOT_FUNC_EXIT_RC(isConnected);
 }
 
 bool aws_iot_is_autoreconnect_enabled(AWS_IoT_Client *pClient) {
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 	if(NULL == pClient) {
 		IOT_WARN(" Client is null! ");
-		FUNC_EXIT_RC(false);
+		IOT_FUNC_EXIT_RC(false);
 	}
 
-	FUNC_EXIT_RC(pClient->clientStatus.isAutoReconnectEnabled);
+	IOT_FUNC_EXIT_RC(pClient->clientStatus.isAutoReconnectEnabled);
 }
 
 IoT_Error_t aws_iot_mqtt_autoreconnect_set_status(AWS_IoT_Client *pClient, bool newStatus) {
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 	if(NULL == pClient) {
-		FUNC_EXIT_RC(NULL_VALUE_ERROR);
+		IOT_FUNC_EXIT_RC(NULL_VALUE_ERROR);
 	}
 	pClient->clientStatus.isAutoReconnectEnabled = newStatus;
-	FUNC_EXIT_RC(SUCCESS);
+	IOT_FUNC_EXIT_RC(SUCCESS);
 }
 
 IoT_Error_t aws_iot_mqtt_set_disconnect_handler(AWS_IoT_Client *pClient, iot_disconnect_handler pDisconnectHandler,
 												void *pDisconnectHandlerData) {
-	FUNC_ENTRY;
+	IOT_FUNC_ENTRY;
 	if(NULL == pClient || NULL == pDisconnectHandler) {
-		FUNC_EXIT_RC(NULL_VALUE_ERROR);
+		IOT_FUNC_EXIT_RC(NULL_VALUE_ERROR);
 	}
 
 	pClient->clientData.disconnectHandler = pDisconnectHandler;
 	pClient->clientData.disconnectHandlerData = pDisconnectHandlerData;
-	FUNC_EXIT_RC(SUCCESS);
+	IOT_FUNC_EXIT_RC(SUCCESS);
 }
 
 uint32_t aws_iot_mqtt_get_network_disconnected_count(AWS_IoT_Client *pClient) {

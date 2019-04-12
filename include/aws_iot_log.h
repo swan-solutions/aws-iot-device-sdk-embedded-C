@@ -57,24 +57,23 @@ extern "C" {
  * Macro to print message function entry and exit
  */
 #ifdef ENABLE_IOT_TRACE
-#define FUNC_ENTRY    \
+#define IOT_FUNC_ENTRY    \
 	{\
-	printf("FUNC_ENTRY:   %s L#%d \n", __func__, __LINE__);  \
+	printf("IOT_FUNC_ENTRY:   %s L#%d \n", __func__, __LINE__);  \
 	}
-#define FUNC_EXIT    \
+#define IOT_FUNC_EXIT    \
 	{\
-	printf("FUNC_EXIT:   %s L#%d \n", __func__, __LINE__);  \
+	printf("IOT_FUNC_EXIT:   %s L#%d \n", __func__, __LINE__);  \
 	}
-#define FUNC_EXIT_RC(x)    \
+#define IOT_FUNC_EXIT_RC(x)    \
 	{\
-	printf("FUNC_EXIT:   %s L#%d Return Code : %d \n", __func__, __LINE__, x);  \
+	printf("IOT_FUNC_EXIT:   %s L#%d Return Code : %d \n", __func__, __LINE__, x);  \
 	return x; \
 	}
 #else
-#define FUNC_ENTRY
-
-#define FUNC_EXIT
-#define FUNC_EXIT_RC(x) { return x; }
+#define IOT_FUNC_ENTRY
+#define IOT_FUNC_EXIT
+#define IOT_FUNC_EXIT_RC(x) { return x; }
 #endif
 
 /**
